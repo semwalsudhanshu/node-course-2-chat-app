@@ -14,22 +14,23 @@ var io =socketIO(server);
 app.use(express.static(publicPath));
 io.on('connection',(socket)=>{
   console.log('New user connected');
-  socket.emit('newEmail',{
-    from:'Sudhanshu@example.com',
-    text:'hello',
-    createdat:123
-  });
-  socket.emit('newMessage',{
-    from:"sarikasemwal",
-    text: "Nodejs complete karo",
-    createdat: 213
-  });
+  // socket.emit('newEmail',{
+  //   from:'Sudhanshu@example.com',
+  //   text:'hello',
+  //   createdat:123
+  // });
 
-  socket.on('CreateEmail',(newEmail)=>{
-    console.log('createEmail',newEmail);
-  });
+
+  // socket.on('CreateEmail',(newEmail)=>{
+  //   console.log('createEmail',newEmail);
+  // });
   socket.on('createMessage',(newMessage)=>{
     console.log('New Message Recieved from the client to server',newMessage);
+    io.emit('newMessage',{
+      from:newMessage.from,
+      text:newMessage.text,
+      createdat:new Date().getTime()
+    });
   });
 
   socket.on('disconnect',()=>{
