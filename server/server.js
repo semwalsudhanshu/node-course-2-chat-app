@@ -46,8 +46,13 @@ io.on('connection',(socket)=>{
   //   console.log('createEmail',newEmail);
   // });
   socket.on('createMessage',(newMessage,callback)=>{
-    console.log('New Message Recieved from the client to server',newMessage);
-    io.emit('newMessage',generateMessage(newMessage.from,newMessage.text));
+    //console.log('New Message Recieved from the client to server',newMessage);
+    var user=users.getUser(socket.id);
+    if(user && isRealString(newMessage.text))
+    {
+      io.to(user.Room).emit('newMessage',generateMessage(user.Name,newMessage.text));
+    }
+
     callback();
     // socket.broadcast.emit('newMessage',{
     //   from:newMessage.from,
@@ -56,7 +61,12 @@ io.on('connection',(socket)=>{
     // });
   });
   socket.on('createLocationMessage',(coords)=>{
-    io.emit('newLocationMessage',generateLocationMessage('Admin',coords.latitude,coords.longitude));
+    var user =users.getUser(socket.id);
+    if(user)
+    {
+      io.to(user.Room).emit('newLocationMessage',generateLocationMessage(user.Name,coords.latitude,coords.longitude));
+    }
+
 
   });
 
